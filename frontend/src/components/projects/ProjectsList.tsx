@@ -97,7 +97,7 @@ export default function ProjectsList() {
       </header>
 
       {/* Create Form */}
-      <div>
+      {/* <div>
         <div className="mx-10 mb-8">
           <h2 className="text-xl font-medium mb-4">Create New Project</h2>
           <form onSubmit={handleCreate} className="card bg-base-200 p-6">
@@ -144,7 +144,7 @@ export default function ProjectsList() {
             </button>
           </form>
         </div>
-      </div>
+      </div> */}
 
       {/* Projects Table */}
       <div className="mx-10">

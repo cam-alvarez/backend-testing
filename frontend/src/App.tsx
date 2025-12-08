@@ -7,12 +7,48 @@ function App() {
 
   return (
     <div>
-      {/* Toggle between old and new */}
       <div className="navbar bg-base-200">
         <div className="flex-1">
           <a className="btn btn-ghost text-xl">React Query Architecture Demo</a>
         </div>
-        <div className="flex-none">
+      </div>
+      {/* name of each tab group should be unique */}
+      <div className="tabs tabs-lg tabs-lift mt-5 mx-5">
+        <input
+          type="radio"
+          name="my_tabs_6"
+          className="tab"
+          aria-label="Tab 1"
+        />
+        <div className="tab-content bg-base-100 border-base-300 p-6">
+          <OldProjectsList />
+        </div>
+
+        <input
+          type="radio"
+          name="my_tabs_6"
+          className="tab"
+          aria-label="Tab 2"
+          defaultChecked
+        />
+        <div className="tab-content bg-base-100 border-base-300 p-6">
+          <NewProjectsList />
+        </div>
+
+        <input
+          type="radio"
+          name="my_tabs_6"
+          className="tab"
+          aria-label="Tab 3"
+        />
+        <div className="tab-content bg-base-100 border-base-300 p-6">
+          Tab content 3
+        </div>
+      </div>
+
+      {/* Toggle between old and new */}
+
+      {/* <div className="flex-none">
           <div className="btn-group">
             <button
               className={`btn ${view === "old" ? "btn-active" : ""}`}
@@ -27,11 +63,10 @@ function App() {
               New Architecture
             </button>
           </div>
-        </div>
-      </div>
+        </div> */}
 
-      {/* Show selected view */}
-      {view === "old" ? <OldProjectsList /> : <NewProjectsList />}
+      {/* Show selected view
+      {view === "old" ? <OldProjectsList /> : <NewProjectsList />} */}
     </div>
   );
 }
