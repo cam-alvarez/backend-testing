@@ -253,7 +253,7 @@ export const ChartBuilder = () => {
             <div className="card bg-base-200">
               <div className="card-body">
                 <h2 className="card-title text-lg">Statistics</h2>
-                <div className="stats stats-vertical bg-base-100 lg:stats-horizontal shadow">
+                <div className="stats bg-base-100 lg:stats-horizontal shadow">
                   <div className="stat">
                     <div className="stat-title">Total Data Points</div>
                     <div className="stat-value text-2xl">
