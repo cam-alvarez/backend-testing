@@ -152,3 +152,20 @@ class SuccessResponse(BaseModel):
     """Standard success response schema"""
     message: str
     data: Optional[dict] = None
+
+class DatasetDataResponse(BaseModel):
+    """Schema for returning dataset row data"""
+    dataset_id: int
+    dataset_name: str
+    total_rows: int
+    columns: List[str]
+    column_types: Dict[str, str]  # Column name -> data type
+    rows: List[Dict[str, Any]]  # List of row data
+    
+    model_config = ConfigDict(from_attributes=True)
+
+
+class DatasetDataQuery(BaseModel):
+    """Schema for querying dataset data with pagination"""
+    skip: int = Field(default=0, ge=0)
+    limit: int = Field(default=100, le=1000)  # Max 1000 rows at a time

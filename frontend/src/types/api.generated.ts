@@ -105,7 +105,8 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** Get Dataset */
+        get: operations["get_dataset_api_dataset__dataset_id__get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -169,6 +170,35 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/datasets/{dataset_id}/data": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Dataset Data
+         * @description Get the actual row data for a dataset with pagination.
+         *     This endpoint is used for charting and data visualization.
+         *
+         *     Args:
+         *         dataset_id: ID of the dataset
+         *         skip: Number of rows to skip (pagination)
+         *         limit: Maximum number of rows to return (max 1000)
+         *
+         *     Returns:
+         *         Dataset metadata + row data with detected column types
+         */
+        get: operations["get_dataset_data_api_datasets__dataset_id__data_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -193,6 +223,26 @@ export interface components {
             filename: string;
             /** Projects */
             projects: components["schemas"]["ProjectBasic"][];
+        };
+        /**
+         * DatasetDataResponse
+         * @description Schema for returning dataset row data
+         */
+        DatasetDataResponse: {
+            /** Dataset Id */
+            dataset_id: number;
+            /** Dataset Name */
+            dataset_name: string;
+            /** Total Rows */
+            total_rows: number;
+            /** Columns */
+            columns: string[];
+            /** Column Types */
+            column_types: {
+                [key: string]: string;
+            };
+            /** Rows */
+            rows: Record<string, never>[];
         };
         /** DatasetResponse */
         DatasetResponse: {
@@ -342,7 +392,7 @@ export interface components {
             /** Tags */
             tags?: string[] | null;
             /** Datasets */
-            datasets: number[] | null;
+            datasets?: number[] | null;
         };
         /**
          * SuccessResponse
@@ -632,6 +682,37 @@ export interface operations {
             };
         };
     };
+    get_dataset_api_dataset__dataset_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                dataset_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DatasetResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     edit_dataset_api_dataset__dataset_id__patch: {
         parameters: {
             query?: never;
@@ -749,6 +830,40 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["DatasetResponse"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_dataset_data_api_datasets__dataset_id__data_get: {
+        parameters: {
+            query?: {
+                skip?: number;
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                dataset_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DatasetDataResponse"];
                 };
             };
             /** @description Validation Error */

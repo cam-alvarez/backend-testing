@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException, Depends, File, Form, UploadFile, sta
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
-from typing import List, Optional
+from typing import List, Optional, Any
 import os
 from dotenv import load_dotenv
 from datetime import datetime
@@ -14,6 +14,7 @@ import json
 from database import Base, engine, get_db
 from models import Project, Tag, Dataset, DatasetRow
 import schemas
+import re
 
 load_dotenv()
 
@@ -105,6 +106,60 @@ def create_dataset(db: Session, file: UploadFile) -> Dataset:
             detail=f"Error processing CSV: {str(e)}"
         )
 
+def detect_column_type(values: List[Any]) -> str:
+    """
+    Detect the data type of a column based on its values.
+    Returns: 'numeric', 'datetime', 'categorical', or 'text'
+    """
+    # Filter out None values
+    non_null_values = [v for v in values if v is not None]
+    
+    if not non_null_values:
+        return 'text'
+    
+    # Check if all values are numeric
+    numeric_count = 0
+    datetime_count = 0
+    
+    for value in non_null_values[:100]:  # Sample first 100 rows
+        # Check for numeric
+        try:
+            float(value)
+            numeric_count += 1
+            continue
+        except (ValueError, TypeError):
+            pass
+        
+        # Check for datetime
+        if isinstance(value, str):
+            # Common date patterns
+            datetime_patterns = [
+                r'\d{4}-\d{2}-\d{2}',  # YYYY-MM-DD
+                r'\d{2}/\d{2}/\d{4}',  # MM/DD/YYYY
+                r'\d{2}-\d{2}-\d{4}',  # DD-MM-YYYY
+                r'\d{1,2}/\d{1,2}/\d{2}|\d{4}'  # M/DD/YYYY
+            ]
+            for pattern in datetime_patterns:
+                if re.match(pattern, str(value)):
+                    datetime_count += 1
+                    break
+    
+    sample_size = min(len(non_null_values), 100)
+    
+    # If 80%+ are numeric, it's numeric
+    if numeric_count / sample_size > 0.8:
+        return 'numeric'
+    
+    # If 80%+ match datetime patterns
+    if datetime_count / sample_size > 0.8:
+        return 'datetime'
+    
+    # If unique values < 20% of total, it's categorical
+    unique_values = len(set(str(v) for v in non_null_values))
+    if unique_values / len(non_null_values) < 0.2:
+        return 'categorical'
+    
+    return 'text'
 
 @app.get("/", tags=["Root"])
 async def root():
@@ -454,6 +509,67 @@ def list_datasets(
 ):
     datasets = db.query(Dataset).offset(skip).limit(limit).all()
     return datasets
+
+@app.get("/api/datasets/{dataset_id}/data", response_model=schemas.DatasetDataResponse, tags=["Datasets"])
+async def get_dataset_data(
+    dataset_id: int,
+    skip: int = 0,
+    limit: int = 100,
+    db: Session = Depends(get_db)
+):
+    """
+    Get the actual row data for a dataset with pagination.
+    This endpoint is used for charting and data visualization.
+    
+    Args:
+        dataset_id: ID of the dataset
+        skip: Number of rows to skip (pagination)
+        limit: Maximum number of rows to return (max 1000)
+    
+    Returns:
+        Dataset metadata + row data with detected column types
+    """
+    # Validate limit
+    if limit > 1000:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Limit cannot exceed 1000 rows"
+        )
+    
+    # Get dataset
+    dataset = db.query(Dataset).filter(Dataset.id == dataset_id).first()
+    if not dataset:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Dataset with id {dataset_id} not found"
+        )
+    
+    # Get paginated rows
+    rows_query = db.query(DatasetRow).filter(
+        DatasetRow.dataset_id == dataset_id
+    ).order_by(DatasetRow.row_number).offset(skip).limit(limit)
+    
+    rows = rows_query.all()
+    
+    # Extract row data
+    row_data = [row.data for row in rows]
+    
+    # Detect column types
+    column_types = {}
+    if row_data and dataset.columns:
+        for column in dataset.columns:
+            # Get all values for this column
+            column_values = [row.get(column) for row in row_data]
+            column_types[column] = detect_column_type(column_values)
+    
+    return schemas.DatasetDataResponse(
+        dataset_id=dataset.id,
+        dataset_name=dataset.name,
+        total_rows=dataset.row_count,
+        columns=dataset.columns or [],
+        column_types=column_types,
+        rows=row_data
+    )
 
 ##### EXPANDED UPLOAD_DATASETS_TO_PROJECT COMMENTED CODE IN THIS FUNCTION #####
 def add_datasets_to_project():

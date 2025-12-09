@@ -1,9 +1,10 @@
-import { useState } from "react";
 import OldProjectsList from "./OldApp"; // Your existing code
+import { ChartBuilder } from "./components/charts/ChartBuilder";
+import { DatasetDataTest } from "./components/charts/DatasetDataTest";
 import NewProjectsList from "./components/projects/ProjectsList"; // New architecture
 
 function App() {
-  const [view, setView] = useState<"old" | "new">("new");
+  // const [view, setView] = useState<"old" | "new">("new");
 
   return (
     <div>
@@ -14,12 +15,7 @@ function App() {
       </div>
       {/* name of each tab group should be unique */}
       <div className="tabs tabs-lg tabs-lift mt-5 mx-5">
-        <input
-          type="radio"
-          name="my_tabs_6"
-          className="tab"
-          aria-label="Tab 1"
-        />
+        <input type="radio" name="my_tabs_6" className="tab" aria-label="Old" />
         <div className="tab-content bg-base-100 border-base-300 p-6">
           <OldProjectsList />
         </div>
@@ -28,7 +24,7 @@ function App() {
           type="radio"
           name="my_tabs_6"
           className="tab"
-          aria-label="Tab 2"
+          aria-label="New"
           defaultChecked
         />
         <div className="tab-content bg-base-100 border-base-300 p-6">
@@ -39,10 +35,20 @@ function App() {
           type="radio"
           name="my_tabs_6"
           className="tab"
-          aria-label="Tab 3"
+          aria-label="Dataset Data Test"
         />
         <div className="tab-content bg-base-100 border-base-300 p-6">
-          Tab content 3
+          <DatasetDataTest />
+        </div>
+        <input
+          type="radio"
+          name="my_tabs_6"
+          className="tab"
+          aria-label="Charts"
+          defaultChecked
+        />
+        <div className="tab-content bg-base-100 border-base-300 p-6">
+          <ChartBuilder />
         </div>
       </div>
 
