@@ -81,9 +81,12 @@ export const ChartBuilder = () => {
         {/* Left Panel - Configuration */}
         <div className="lg:col-span-1 space-y-6">
           {/* Dataset Selection */}
-          <div className="card bg-base-200">
-            <div className="card-body">
-              <h2 className="card-title text-lg">1. Select Dataset</h2>
+          <div className="collapse bg-base-200">
+            <input type="checkbox" />
+            <h2 className="collapse-title card-title text-lg">
+              1. Select Dataset
+            </h2>
+            <div className="collapse-content">
               <DatasetSelector
                 value={config.datasetId}
                 onChange={(datasetId) =>
@@ -101,10 +104,12 @@ export const ChartBuilder = () => {
 
           {/* Column Selection */}
           {config.datasetId && (
-            <div className="card bg-base-200">
-              <div className="card-body">
-                <h2 className="card-title text-lg">2. Select Axes</h2>
-
+            <div className="collapse bg-base-200">
+              <input type="checkbox" />
+              <h2 className="collapse-title card-title text-lg">
+                2. Select Axes
+              </h2>
+              <div className="collapse-content">
                 {isLoading ? (
                   <div className="flex justify-center p-4">
                     <span className="loading loading-spinner"></span>
@@ -148,9 +153,12 @@ export const ChartBuilder = () => {
 
           {/* Chart Options */}
           {config.datasetId && config.xAxis && config.yAxis && (
-            <div className="card bg-base-200">
-              <div className="card-body">
-                <h2 className="card-title text-lg">3. Chart Options</h2>
+            <div className="collapse bg-base-200">
+              <input type="checkbox" />
+              <h2 className="collapse-title card-title text-lg">
+                3. Chart Options
+              </h2>
+              <div className="collapse-content">
                 <ChartOptions
                   barMode={config.barMode}
                   onBarModeChange={(barMode) => {
