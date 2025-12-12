@@ -199,10 +199,10 @@ export const ChartBuilder = () => {
         {/* Right Panel - Chart Visualization */}
         <div className="lg:col-span-2 space-y-6">
           {/* Chart Preview */}
-          <div className="card bg-base-200">
-            <div className="card-body">
-              <h2 className="card-title text-lg">Chart Preview</h2>
-
+          <div className="collapse bg-base-200">
+            <input type="checkbox" />
+            <h2 className="collapse-title card-title text-lg">Chart Preview</h2>
+            <div className="collapse-content">
               {/* Validation Messages */}
               {!config.datasetId && (
                 <div className="alert alert-info">
@@ -258,9 +258,10 @@ export const ChartBuilder = () => {
 
           {/* Statistics Panel */}
           {yAxisStats && canRenderChart && (
-            <div className="card bg-base-200">
-              <div className="card-body">
-                <h2 className="card-title text-lg">Statistics</h2>
+            <div className="collapse bg-base-200">
+              <input type="checkbox" />
+              <h2 className="collapse-title card-title text-lg">Statistics</h2>
+              <div className="collapse-content">
                 <div className="stats bg-base-100 lg:stats-horizontal shadow">
                   <div className="stat">
                     <div className="stat-title">Total Data Points</div>

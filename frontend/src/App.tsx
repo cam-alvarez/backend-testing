@@ -1,4 +1,5 @@
 import OldProjectsList from "./OldApp"; // Your existing code
+import { ChartArea } from "./components/charts/ChartArea";
 import { ChartBuilder } from "./components/charts/ChartBuilder";
 import { DatasetDataTest } from "./components/charts/DatasetDataTest";
 import NewProjectsList from "./components/projects/ProjectsList"; // New architecture
@@ -49,6 +50,8 @@ function App() {
         />
         <div className="tab-content bg-base-100 border-base-300 p-6">
           <ChartBuilder />
+          <div className="divider" />
+          <ChartArea />
         </div>
       </div>
 
