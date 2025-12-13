@@ -27,7 +27,7 @@ export const DatasetSelector = ({ value, onChange }: DatasetSelectorProps) => {
         )}
       </label>
       <select
-        className="select select-bordered w-full"
+        className="select select-sm select-bordered w-full"
         value={value ?? ""}
         onChange={(e) =>
           onChange(e.target.value ? Number(e.target.value) : null)
