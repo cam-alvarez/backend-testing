@@ -65,8 +65,8 @@ export const BarChartVisualization = ({
   };
 
   return (
-    <div className="w-full h-96 bg-base-100 rounded-lg p-4">
-      <ResponsiveContainer width="100%" height="100%">
+    <div className="w-full bg-base-100 rounded-lg p-4 flex">
+      <ResponsiveContainer width="100%" aspect={1.618}>
         <BarChart
           data={data}
           margin={{ top: 20, right: 30, left: 20, bottom: 60 }}

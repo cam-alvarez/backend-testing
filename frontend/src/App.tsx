@@ -51,7 +51,10 @@ function App() {
         <div className="tab-content bg-base-100 border-base-300 p-6">
           <ChartBuilder />
           <div className="divider" />
-          <ChartArea />
+          <div className="flex gap-6">
+            <ChartArea />
+            <ChartArea />
+          </div>
         </div>
       </div>
 
